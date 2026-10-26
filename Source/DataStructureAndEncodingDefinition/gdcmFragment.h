@@ -18,6 +18,7 @@
 #include "gdcmByteValue.h"
 #include "gdcmSmartPointer.h"
 #include "gdcmParseException.h"
+#include "gdcmValueLengthCheck.h"
 
 namespace gdcm_ns
 {
@@ -91,6 +92,14 @@ public:
     {
     // Self
     SmartPointer<ByteValue> bv = new ByteValue;
+    if( ValueLengthExceedsStream( is, *bv, ValueLengthField ) )
+      {
+      ValueField = bv;
+      ValueLengthField = 0;
+      ParseException pe;
+      pe.SetLastElement( *this );
+      throw pe;
+      }
     bv->SetLength(ValueLengthField);
     if( !bv->Read<TSwap>(is) )
       {
@@ -144,6 +153,14 @@ public:
 
     // Self
     SmartPointer<ByteValue> bv = new ByteValue;
+    if( ValueLengthExceedsStream( is, *bv, ValueLengthField ) )
+      {
+      ValueField = bv;
+      ValueLengthField = 0;
+      ParseException pe;
+      pe.SetLastElement( *this );
+      throw pe;
+      }
     bv->SetLength(ValueLengthField);
     if( !bv->Read<TSwap>(is) )
       {
